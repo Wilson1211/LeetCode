@@ -1,55 +1,91 @@
-#include <iostream>
-#include <string.h>
-#include <limits>
-#include <algorithm>
-#include <math.h>
 #include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <sstream>
 #include <deque>
-#include <vector>
 using namespace std;
 
-// https://leetcode.com/problems/sliding-window-maximum/
+//https://leetcode.com/problems/sliding-window-maximum/
+
+// if use char array to store input and then convert it to int, it will be very large
 
 int main() {
+
     int n, i, j, k;
-    char a[200005];
-    char strnum[10001];
+    deque<long> mydeque;
+    deque<long> myd_p;
+    vector<long> num;
+    vector<long> ans;
     long nu;
-    deque<int> mydeque;
 
-    char *ptr1, *ptr2;
-    //cin >>　n;
-    cin.getline(a, 200005);
-    int len = strlen(a);
+    string line;
 
-    if(len==1){
-        cin >> k;
-        if(k == 1){
-            cout<<a<<endl;
-            return 0;
-        }else{
-            cout<<"none\n";
-            return 0;
+/*
+    while(cin>>nu){
+        num.emplace_back(nu);
+    }
+*/
+
+    getline(cin, line);
+    istringstream iss(line);
+
+    while(iss>>nu){
+        num.emplace_back(nu);
+    }
+    n = num.size();
+
+    cin >> k;
+
+    for(i=0;i<k;i++) {
+
+        while(mydeque.size()){
+            nu = mydeque.back();
+            if(nu > num[i]){
+                break;
+            }else{
+                mydeque.pop_back();
+                myd_p.pop_back();
+            }
         }
+       
+        mydeque.emplace_back(num[i]);
+        myd_p.emplace_back(i);
+        
     }
+    cout<<mydeque[0]<<" ";
 
+    for(i=k;i<n;i++) {
+        int len = mydeque.size();
+        if(!len){
+            mydeque.emplace_back(num[i]);
+            myd_p.emplace_back(i);
+        }else{
+            if(myd_p[0]+k-1<i) {
+                mydeque.pop_front();
+                myd_p.pop_front();
+            }
+            
+            while(mydeque.size()){
+                nu = mydeque.back();
+                if(nu > num[i]){
+                    mydeque.emplace_back(num[i]);
+                    myd_p.emplace_back(i);
+                    break;
+                }else{
+                    mydeque.pop_back();
+                    myd_p.pop_back();
+                }
+            }
+            if(!mydeque.size()){
+                mydeque.emplace_back(num[i]);
+                myd_p.emplace_back(i);
+            }
+            
+        }
 
-    vector<long> numv(len);
+        cout<<mydeque[0]<<" ";
 
-    ptr1 = a;
-    ptr2 = strchr(ptr1, ' ');
-
-
-    while(ptr2!=NULL){
-        memcpy(strnum, ptr1, ptr2-ptr1);
-        nu = stoi(strnum);
-        numv.emplace_back(nu);
-        ptr1 = ptr2+1;
-        ptr2 = strchr(ptr1, ' ');
     }
-
-    for(i=0;i<)
-
-
+    cout<<endl;
     return 0;
 }
