@@ -26,7 +26,8 @@ public:
             dp1[i] = numk[i];
             dp2[i] = numk[i];
             dp3[i] = numk[i];
-            //index[i]=i;
+            index[i][0]=i;
+            index[i][1]=1;
         }
 
         // calculate dp1
@@ -34,12 +35,13 @@ public:
             for(int j=k-1;(j>=0);j--){
                 if(((i-k-j)>=0)&&(dp1[i]<dp1[i-k-j])){
                     dp1[i] = dp1[i-k-j];
-                    //index[i] = index[i-k-j];
+                    index[i][0] = index[i-k-j][0];
                 }
             }
             if(dp1[i]<numk[i]){
                 dp1[i] = numk[i];
-                //index[i] = i;
+                index[i][0] = i;
+                index[i][1] = 1;
             }
         }
 
@@ -48,13 +50,14 @@ public:
             for(int j=k-1;(j>=0);j--){
                 if(((i-k-j)>=0)&&(dp2[i]<dp2[i-k-j])){
                     dp2[i] = dp2[i-k-j];
-                    //index[i] = index[i-k-j];
+                    index[i][0] = index[i-k-j][0];
                 }
             }
             for(int j=k-1;(j>=0);j--){
                 if(((i-k-j)>=0)&&(dp2[i]<dp1[i-k-j]+numk[i])){
                     dp2[i] = dp1[i-k-j]+numk[i];
-                    //index[i] = i-k-j;
+                    index[i][0] = i-k-j;
+                    index[i][1] = 1;
                 }
             }
         }
@@ -64,13 +67,14 @@ public:
             for(int j=k-1;(j>=0);j--){
                 if(((i-k-j)>=0)&&(dp3[i]<dp3[i-k-j])){
                     dp3[i] = dp3[i-k-j];
-                    //index[i] = index[i-k-j];
+                    index[i][0] = index[i-k-j][0];
                 }
             }
             for(int j=k-1;(j>=0);j--){
                 if(((i-k-j)>=0)&&(dp3[i]<dp2[i-k-j]+numk[i])){
                     dp3[i] = dp2[i-k-j]+numk[i];
-                    //index[i] = i-k-j;
+                    index[i][0] = i-k-j;
+                    index[i][1] = 1;
                 }
             }
         }
@@ -85,7 +89,7 @@ public:
         memset(dp2, 0, 20000*sizeof(long long));        
         memset(dp3, 0, 20000*sizeof(long long));        
         memset(numk, 0, 20000*sizeof(long long));        
-        //memset(index, 0, 20000*sizeof(int));
+        memset(index, 0, 40000*sizeof(int));
 
         sol(nums, k);
 
@@ -119,9 +123,12 @@ public:
             }
         }
 */
+
+// need two records, one represent jump, one represent previous
+
         int max = 0;
         int max_id, sec_id, thr_id;
-
+/*
         for(int i=0;i<nums.size();i++){
             if(max<dp3[i]){
                 max = dp3[i];
@@ -129,7 +136,7 @@ public:
             }
         }
         max=0;
-        for(int i=0;i<max_id;i++){
+        for(int i=0;i<=max_id-k;i++){
             if(max<dp2[i]){
                 max = dp2[i];
                 sec_id = i;
@@ -137,13 +144,24 @@ public:
         }
                      
         max=0;
-        for(int i=0;i<sec_id;i++){
+        for(int i=0;i<=sec_id-k;i++){
             if(max<dp1[i]){
                 max = dp1[i];
                 thr_id = i;
             }
         }
+*/
 
+        for(int i=nums.size()-k;i>=0;i--) {
+            if(max<dp3[i]){
+                max = dp3[i];
+                max_id = i;
+            }
+        }
+        
+        for(int i=max_id-1;i>=0;i--){
+
+        }
 
         ans[2] = max_id;
         ans[1] = sec_id;
@@ -155,7 +173,7 @@ public:
     long long dp1[20000];
     long long dp2[20000];
     long long dp3[20000];
-    //int index[20000];
+    int index[20000][2]; // 0: previous 1: jump
 };
 
 int main()
