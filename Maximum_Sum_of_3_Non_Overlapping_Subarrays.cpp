@@ -27,7 +27,6 @@ public:
             dp2[i] = numk[i];
             dp3[i] = numk[i];
             index[i][0]=i;
-            index[i][1]=1;
         }
 
         // calculate dp1
@@ -83,6 +82,28 @@ public:
 
     }
 
+    int check_k(int index, int arr, int &max, int k) {
+        
+        long long *dp;
+
+        if(arr == 1){
+            dp = dp1;
+        }else if(arr == 2){
+            dp = dp2;
+        }else if(arr == 3){
+            dp = dp3;
+        }
+
+        int i, j=index;
+        for(i=1;i<=k;i++){
+            if(max <= dp[index-i]){
+                max = dp[index-i];
+                j = index-i;
+            }
+        }
+        
+        return j;
+    }
 
     vector<int> maxSumOfThreeSubarrays(vector<int>& nums, int k) {
         memset(dp1, 0, 20000*sizeof(long long));        
@@ -151,18 +172,49 @@ public:
             }
         }
 */
-
-        for(int i=nums.size()-k;i>=0;i--) {
-            if(max<dp3[i]){
+        int j=0, l;
+        for(int i=nums.size()-k;(i>=0);i--) {
+            if(max<=dp3[i]){
                 max = dp3[i];
                 max_id = i;
+                l = check_k(i, 3, max, k);
+                if(l==i){
+                    break;
+                }else{
+                    i=l+1;
+                }
             }
         }
-        
-        for(int i=max_id-1;i>=0;i--){
 
+        max = 0;
+        for(int i=max_id-k;i>=0;i--){
+            if(max <=dp2[i]){
+                max=dp2[i];
+                sec_id=i;
+                l=check_k(i, 2, max, k);
+                if(l==i){
+                    break;
+                }else{
+                    i=l+1;
+                }
+            }
         }
 
+        max=0;
+        for(int i=sec_id-k;i>=0;i--){
+            if(max <=dp1[i]){
+                max=dp1[i];
+                thr_id=i;
+                l=check_k(i, 1, max, k);
+                if(l==i){
+                    break;
+                }else{
+                    i=l+1;
+                }
+            }
+        }
+
+        
         ans[2] = max_id;
         ans[1] = sec_id;
         ans[0] = thr_id;
@@ -179,10 +231,10 @@ public:
 int main()
 {
     Solution answer;
-    vector<int> arr1 = {1,2,1,2,1,2,1,2,1};
-    vector<int> arr2 = {1,2,1,2,6,7,5,1};
-    vector<int> arr3 = {4,5,10,6,11,17,4,11,1,3};
-    vector<int> arr4 = {18,11,14,7,16,4,18,11,4,8};
+    vector<int> arr1 = {1,2,1,2,1,2,1,2,1}; // 9
+    vector<int> arr2 = {1,2,1,2,6,7,5,1};   // 8
+    vector<int> arr3 = {4,5,10,6,11,17,4,11,1,3};   // 10
+    vector<int> arr4 = {18,11,14,7,16,4,18,11,4,8}; // 10
 
     int k1 , k2;
     k1 = k2 = 2;
@@ -190,13 +242,10 @@ int main()
     vector<int> ans;
     ans.resize(3, 0);
     
-    ans = answer.maxSumOfThreeSubarrays(arr4, 2);
-
-    ans = answer.maxSumOfThreeSubarrays(arr1, k1);
-    //cout<<ans<<endl;
+    //ans = answer.maxSumOfThreeSubarrays(arr4, 2);
+    //ans = answer.maxSumOfThreeSubarrays(arr1, k1);
     ans = answer.maxSumOfThreeSubarrays(arr2, k2);
-    //cout<<ans<<endl;
-    ans = answer.maxSumOfThreeSubarrays(arr3, 1);
+    //ans = answer.maxSumOfThreeSubarrays(arr3, 1);
 
     /* code */
     return 0;
